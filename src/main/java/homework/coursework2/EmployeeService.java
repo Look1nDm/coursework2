@@ -22,8 +22,8 @@ public class EmployeeService {
         return emp;
     }
 
-    public Employee removeEmployee(String firstName, String lastName) {
-        Employee emp = new Employee(firstName, lastName);
+    public Employee removeEmployee(String firstName, String lastName,int salary,int department) {
+        Employee emp = new Employee(firstName, lastName,salary,department);
         if (listEmployee.containsKey(emp.getFullName())) {
             listEmployee.remove(emp.getFullName());
         } else {
@@ -32,8 +32,8 @@ public class EmployeeService {
         return emp;
     }
 
-    public Employee findEmployee(String firstName, String lastName) {
-        Employee emp = new Employee(firstName, lastName);
+    public Employee findEmployee(String firstName, String lastName,int salary,int department) {
+        Employee emp = new Employee(firstName, lastName,salary,department);
         if (listEmployee.containsKey(emp.getFullName())) {
             return emp;
         } else {
@@ -90,29 +90,25 @@ public class EmployeeService {
     }
     // ищем минимальную зарплату в отделе
     public Optional<Employee> getMinDepartmentSalary(int department) {
-        List<Employee> list = departmentEmployee(department);
-        return list.stream().reduce((a1, a2)->a1.getSalary() < a2.getSalary()?a1:a2);
+        return listEmployee.values().stream().filter(e->e.getDepartment() == department).min(Comparator.comparingInt((Employee::getSalary)));
     }
     // ищем максимальную зарплату в отделе
     public Optional<Employee> getMaxDepartmentSalary(int department) {
-        List<Employee> list = departmentEmployee(department);
-        return list.stream().reduce((a1, a2)->a1.getSalary() > a2.getSalary()?a1:a2);
+        return listEmployee.values().stream().filter(e->e.getDepartment() == department).max(Comparator.comparingInt(Employee::getSalary));
     }
     // находим сумму заработных плат сотрудников в отделе
         public void getSumSalaryDepartment(int department) {
-        List<Employee> list = departmentEmployee(department);
-        int sum = list.stream().map(Employee::getSalary).reduce((a1,a2)->a1+a2).get();
+        int sum = listEmployee.values().stream().filter(e->e.getDepartment() == department).map(Employee::getSalary).reduce((a1,a2)->a1+a2).get();
         System.out.println("Сумма затрат на заработную плату в отделе №" + department + " равна - " + sum);
     }
    // метод выводит средную заработную плату в указанном отделе
     void getMiddleSalaryDepartment(int department) {
-        List<Employee> list = departmentEmployee(department);
-        double midSalary = list.stream().mapToInt(Employee::getSalary).average().getAsDouble();
+        double midSalary = listEmployee.values().stream().filter(e->e.getDepartment()==department).mapToInt(Employee::getSalary).average().getAsDouble();
         System.out.println("Средняя заработная плата по отделу №" + department + " равна - " + midSalary);
     }
     public List<Integer> getIndexSalaryDepartment(int department, int index) {
-        List<Employee> list = departmentEmployee(department);
-        return list.stream().map(Employee::getSalary).map(e->e+(e/100)*index).collect(Collectors.toList());
+        return listEmployee.values().stream().filter(e->e.getDepartment()==department).map(Employee::getSalary)
+                .map(e->e+(e/100)*index).collect(Collectors.toList());
     }
     public Map<Integer, List<Employee>> printAllEmployeeDepartment(){
         return printEmployees().stream().collect(Collectors.groupingBy(Employee::getDepartment));

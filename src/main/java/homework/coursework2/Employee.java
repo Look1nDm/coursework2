@@ -8,14 +8,6 @@ public class Employee {
     private final int salary;
     private final int department;
 
-
-    public Employee(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        department = 0;
-        salary = 0;
-    }
-
     public Employee(String firstName, String lastName, int salary, int department) {
         this.firstName = firstName;
         this.lastName = lastName;

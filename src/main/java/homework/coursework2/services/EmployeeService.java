@@ -1,17 +1,24 @@
-package homework.coursework2;
+package homework.coursework2.services;
+
+import homework.coursework2.exceptions.EmployeeAlreadyAddedException;
+import homework.coursework2.exceptions.EmployeeNotFoundException;
+import homework.coursework2.exceptions.NotValException;
+import homework.coursework2.model.Employee;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
-    private final Map<String, Employee> listEmployee;
-
+    final Map<String, Employee> listEmployee;
     public EmployeeService() {
-        this.listEmployee = new HashMap<>();
+        this.listEmployee = new HashMap<>(Map.of("one",
+                new Employee("Ivan","Ivanov",40000,2),"two",
+                new Employee("Vasiliy","Petor", 30000,1),"three",
+                new Employee("Maria","Rumianceva",35000,3)
+        ));
     }
 
     public Employee addEmployees(String firstName, String lastName, int salary, int department) {
@@ -59,6 +66,9 @@ public class EmployeeService {
         return new ArrayList<>(listEmployee.values());
     }
 
+
+
+
     //=============================================================================================
     public int getSumSalary() {
         int sumSalary = 0;
@@ -101,45 +111,5 @@ public class EmployeeService {
             System.out.println((entry.getValue().getSalary()) + entry.getValue().getSalary() / 100 * index);
         }
     }
-    //=======РАБОТА С ОТДЕЛАМИ==================
-
-    // возвращает сотрудников нужного нам отдела
-    public List<Employee> departmentEmployee(int department) {
-        return listEmployee.values().stream()
-                .filter(e -> e.getDepartment() == department)
-                .collect(Collectors.toList());
-    }
-
-    // ищем минимальную зарплату в отделе
-    public Optional<Employee> getMinDepartmentSalary(int department) {
-        return listEmployee.values().stream().filter(e -> e.getDepartment() == department).min(Comparator.comparingInt((Employee::getSalary)));
-    }
-
-    // ищем максимальную зарплату в отделе
-    public Optional<Employee> getMaxDepartmentSalary(int department) {
-        return listEmployee.values().stream().filter(e -> e.getDepartment() == department).max(Comparator.comparingInt(Employee::getSalary));
-    }
-
-    // находим сумму заработных плат сотрудников в отделе
-    public void getSumSalaryDepartment(int department) {
-        int sum = listEmployee.values().stream().filter(e -> e.getDepartment() == department).map(Employee::getSalary).reduce((a1, a2) -> a1 + a2).get();
-        System.out.println("Сумма затрат на заработную плату в отделе №" + department + " равна - " + sum);
-    }
-
-    // метод выводит средную заработную плату в указанном отделе
-    void getMiddleSalaryDepartment(int department) {
-        double midSalary = listEmployee.values().stream().filter(e -> e.getDepartment() == department).mapToInt(Employee::getSalary).average().getAsDouble();
-        System.out.println("Средняя заработная плата по отделу №" + department + " равна - " + midSalary);
-    }
-
-    public List<Integer> getIndexSalaryDepartment(int department, int index) {
-        return listEmployee.values().stream().filter(e -> e.getDepartment() == department).map(Employee::getSalary)
-                .map(e -> e + (e / 100) * index).collect(Collectors.toList());
-    }
-
-    public Map<Integer, List<Employee>> printAllEmployeeDepartment() {
-        return printEmployees().stream().collect(Collectors.groupingBy(Employee::getDepartment));
-    }
-
 }
 

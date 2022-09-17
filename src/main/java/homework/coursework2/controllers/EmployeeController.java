@@ -1,5 +1,8 @@
-package homework.coursework2;
+package homework.coursework2.controllers;
 
+import homework.coursework2.services.DepartmentService;
+import homework.coursework2.services.EmployeeService;
+import homework.coursework2.model.Employee;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,13 +15,15 @@ import java.util.Map;
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, DepartmentService departmentService) {
         this.employeeService = employeeService;
+        this.departmentService = departmentService;
     }
 
     @GetMapping(path = "/add")
-    public Employee addEmployee(@RequestParam String firstName, @RequestParam String lastName,@RequestParam int salary,@RequestParam int department) {
+    public Employee addEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam int salary, @RequestParam int department) {
         return employeeService.addEmployees(firstName, lastName,salary,department);
     }
 
@@ -35,24 +40,5 @@ public class EmployeeController {
     @GetMapping(path = "/printEmployee")
     public String printEmployee() {
         return employeeService.printEmployees().toString();
-    }
-
-    @GetMapping(path = "/departments/max-salary")
-    public String getMaxDepartmentSalary(@RequestParam int departmentId) {
-        return "Максимальная заработная плата в отделе №" + departmentId + " у сотрудника " + employeeService.getMaxDepartmentSalary(departmentId).toString();
-    }
-
-    @GetMapping(path = "departments/min-salary")
-    public String getMinDepartmentSalary(@RequestParam int departmentId) {
-        return "Минимальная заработная плата в отделе №" + departmentId + " у сотрудника " + employeeService.getMinDepartmentSalary(departmentId).toString();
-    }
-
-    @GetMapping(path = "/departments/al")
-    public List<Employee> departmentEmployee (@RequestParam int departmentId) {
-        return employeeService.departmentEmployee(departmentId);
-    }
-    @GetMapping(path = "/departments/all")
-    public Map<Integer, List<Employee>> printAllEmployeeDepartment(){
-        return employeeService.printAllEmployeeDepartment();
     }
 }

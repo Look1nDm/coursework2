@@ -1,8 +1,7 @@
-package homework.coursework2;
+package homework.coursework2.model;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Locale;
 import java.util.Objects;
 
 public class Employee {
@@ -10,7 +9,6 @@ public class Employee {
     private final String lastName;
     private final int salary;
     private final int department;
-
     public Employee(String firstName, String lastName, int salary, int department) {
         this.firstName = StringUtils. capitalize(firstName.toLowerCase());
         this.lastName = StringUtils.capitalize(lastName.toLowerCase());
